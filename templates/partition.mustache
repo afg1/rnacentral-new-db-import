@@ -1,0 +1,97 @@
+CREATE TABLE rnacen.xref_p{{ index }}_deleted (
+	dbid int2 NOT NULL, -- database identifier
+	created int4 NOT NULL, -- release identifier where the cross-reference was created
+	"last" int4 NOT NULL, -- release identifier where the cross-reference was last seen
+	upi varchar(26) NOT NULL, -- unique RNAcentral identifier
+	version_i int4 NOT NULL, -- sequence version
+	deleted bpchar(1) NOT NULL, -- 'Y' if the cross-reference exists in the most recent database release or 'N' if not
+	"timestamp" timestamp NOT NULL DEFAULT 'now'::text::timestamp without time zone, -- time of the last modification
+	userstamp varchar(20) NOT NULL DEFAULT 'USER'::character varying, -- user of the last modification
+	ac varchar(300) NOT NULL, -- protein identifier in the source database
+	"version" int4 NULL, -- sequence version in the source database
+	taxid int8 NULL, -- taxonomy identifier
+	id bigserial, -- unique id
+	CONSTRAINT "ck_xref$deleted" CHECK ((deleted = ANY (ARRAY['Y'::bpchar, 'N'::bpchar]))),
+	CONSTRAINT xref_p{{ index }}_deleted_check CHECK (((dbid = {{ index }}) AND (deleted = 'Y'::bpchar))),
+	CONSTRAINT xref_p{{ index }}_deleted_fk1 FOREIGN KEY (created) REFERENCES rnc_release(id),
+	CONSTRAINT xref_p{{ index }}_deleted_fk2 FOREIGN KEY (dbid) REFERENCES rnc_database(id),
+	CONSTRAINT xref_p{{ index }}_deleted_fk3 FOREIGN KEY (last) REFERENCES rnc_release(id),
+	CONSTRAINT xref_p{{ index }}_deleted_fk4 FOREIGN KEY (upi) REFERENCES rna(upi)
+)
+INHERITS (rnacen.xref);
+CREATE INDEX "xref_p{{ index }}_deleted$ac" ON rnacen.xref_p{{ index }}_deleted USING btree (ac);
+CREATE INDEX "xref_p{{ index }}_deleted$created" ON rnacen.xref_p{{ index }}_deleted USING btree (created);
+CREATE INDEX "xref_p{{ index }}_deleted$dbid" ON rnacen.xref_p{{ index }}_deleted USING btree (dbid);
+CREATE UNIQUE INDEX "xref_p{{ index }}_deleted$id" ON rnacen.xref_p{{ index }}_deleted USING btree (id);
+CREATE INDEX "xref_p{{ index }}_deleted$last" ON rnacen.xref_p{{ index }}_deleted USING btree (last);
+CREATE INDEX "xref_p{{ index }}_deleted$taxid" ON rnacen.xref_p{{ index }}_deleted USING btree (taxid);
+CREATE INDEX "xref_p{{ index }}_deleted$upi" ON rnacen.xref_p{{ index }}_deleted USING btree (upi);
+
+-- Column comments
+
+COMMENT ON COLUMN rnacen.xref_p{{ index }}_deleted.dbid IS 'database identifier';
+COMMENT ON COLUMN rnacen.xref_p{{ index }}_deleted.created IS 'release identifier where the cross-reference was created';
+COMMENT ON COLUMN rnacen.xref_p{{ index }}_deleted."last" IS 'release identifier where the cross-reference was last seen';
+COMMENT ON COLUMN rnacen.xref_p{{ index }}_deleted.upi IS 'unique RNAcentral identifier';
+COMMENT ON COLUMN rnacen.xref_p{{ index }}_deleted.version_i IS 'sequence version';
+COMMENT ON COLUMN rnacen.xref_p{{ index }}_deleted.deleted IS '''Y'' if the cross-reference exists in the most recent database release or ''N'' if not';
+COMMENT ON COLUMN rnacen.xref_p{{ index }}_deleted."timestamp" IS 'time of the last modification';
+COMMENT ON COLUMN rnacen.xref_p{{ index }}_deleted.userstamp IS 'user of the last modification';
+COMMENT ON COLUMN rnacen.xref_p{{ index }}_deleted.ac IS 'protein identifier in the source database';
+COMMENT ON COLUMN rnacen.xref_p{{ index }}_deleted."version" IS 'sequence version in the source database';
+COMMENT ON COLUMN rnacen.xref_p{{ index }}_deleted.taxid IS 'taxonomy identifier';
+COMMENT ON COLUMN rnacen.xref_p{{ index }}_deleted.id IS 'unique id';
+
+-- Permissions
+
+ALTER TABLE rnacen.xref_p{{ index }}_deleted OWNER TO rnacen;
+GRANT ALL ON TABLE rnacen.xref_p{{ index }}_deleted TO rnacen;
+
+CREATE TABLE rnacen.xref_p{{ index }}_not_deleted (
+	dbid int2 NOT NULL, -- database identifier
+	created int4 NOT NULL, -- release identifier where the cross-reference was created
+	"last" int4 NOT NULL, -- release identifier where the cross-reference was last seen
+	upi varchar(26) NOT NULL, -- unique RNAcentral identifier
+	version_i int4 NOT NULL, -- sequence version
+	deleted bpchar(1) NOT NULL, -- 'Y' if the cross-reference exists in the most recent database release or 'N' if not
+	"timestamp" timestamp NOT NULL DEFAULT 'now'::text::timestamp without time zone, -- time of the last modification
+	userstamp varchar(20) NOT NULL DEFAULT 'USER'::character varying, -- user of the last modification
+	ac varchar(300) NOT NULL, -- protein identifier in the source database
+	"version" int4 NULL, -- sequence version in the source database
+	taxid int8 NULL, -- taxonomy identifier
+	id bigserial, -- unique id
+	CONSTRAINT "ck_xref$deleted" CHECK ((deleted = ANY (ARRAY['Y'::bpchar, 'N'::bpchar]))),
+	CONSTRAINT xref_p{{ index }}_not_deleted_check CHECK (((dbid = {{ index }}) AND (deleted = 'N'::bpchar))),
+	CONSTRAINT xref_p{{ index }}_not_deleted_fk1 FOREIGN KEY (created) REFERENCES rnc_release(id),
+	CONSTRAINT xref_p{{ index }}_not_deleted_fk2 FOREIGN KEY (dbid) REFERENCES rnc_database(id),
+	CONSTRAINT xref_p{{ index }}_not_deleted_fk3 FOREIGN KEY (last) REFERENCES rnc_release(id),
+	CONSTRAINT xref_p{{ index }}_not_deleted_fk4 FOREIGN KEY (upi) REFERENCES rna(upi)
+)
+INHERITS (rnacen.xref);
+CREATE INDEX "xref_p{{ index }}_not_deleted$ac" ON rnacen.xref_p{{ index }}_not_deleted USING btree (ac);
+CREATE INDEX "xref_p{{ index }}_not_deleted$created" ON rnacen.xref_p{{ index }}_not_deleted USING btree (created);
+CREATE INDEX "xref_p{{ index }}_not_deleted$dbid" ON rnacen.xref_p{{ index }}_not_deleted USING btree (dbid);
+CREATE UNIQUE INDEX "xref_p{{ index }}_not_deleted$id" ON rnacen.xref_p{{ index }}_not_deleted USING btree (id);
+CREATE INDEX "xref_p{{ index }}_not_deleted$last" ON rnacen.xref_p{{ index }}_not_deleted USING btree (last);
+CREATE INDEX "xref_p{{ index }}_not_deleted$taxid" ON rnacen.xref_p{{ index }}_not_deleted USING btree (taxid);
+CREATE INDEX "xref_p{{ index }}_not_deleted$upi" ON rnacen.xref_p{{ index }}_not_deleted USING btree (upi);
+
+-- Column comments
+
+COMMENT ON COLUMN rnacen.xref_p{{ index }}_not_deleted.dbid IS 'database identifier';
+COMMENT ON COLUMN rnacen.xref_p{{ index }}_not_deleted.created IS 'release identifier where the cross-reference was created';
+COMMENT ON COLUMN rnacen.xref_p{{ index }}_not_deleted."last" IS 'release identifier where the cross-reference was last seen';
+COMMENT ON COLUMN rnacen.xref_p{{ index }}_not_deleted.upi IS 'unique RNAcentral identifier';
+COMMENT ON COLUMN rnacen.xref_p{{ index }}_not_deleted.version_i IS 'sequence version';
+COMMENT ON COLUMN rnacen.xref_p{{ index }}_not_deleted.deleted IS '''Y'' if the cross-reference exists in the most recent database release or ''N'' if not';
+COMMENT ON COLUMN rnacen.xref_p{{ index }}_not_deleted."timestamp" IS 'time of the last modification';
+COMMENT ON COLUMN rnacen.xref_p{{ index }}_not_deleted.userstamp IS 'user of the last modification';
+COMMENT ON COLUMN rnacen.xref_p{{ index }}_not_deleted.ac IS 'protein identifier in the source database';
+COMMENT ON COLUMN rnacen.xref_p{{ index }}_not_deleted."version" IS 'sequence version in the source database';
+COMMENT ON COLUMN rnacen.xref_p{{ index }}_not_deleted.taxid IS 'taxonomy identifier';
+COMMENT ON COLUMN rnacen.xref_p{{ index }}_not_deleted.id IS 'unique id';
+
+-- Permissions
+
+ALTER TABLE rnacen.xref_p{{ index }}_not_deleted OWNER TO rnacen;
+GRANT ALL ON TABLE rnacen.xref_p{{ index }}_not_deleted TO rnacen;

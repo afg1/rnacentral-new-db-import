@@ -1,0 +1,7 @@
+ELSIF ( NEW.DBID IN ({{ index }}) ) THEN
+        IF ( NEW.DELETED IN ('Y') ) THEN INSERT INTO XREF_P{{ index }}_DELETED VALUES (NEW.*);
+        ELSIF ( NEW.DELETED IN ('N') ) THEN INSERT INTO XREF_P{{ index }}_NOT_DELETED VALUES (NEW.*);
+        ELSE
+                -- Raise an exception
+                RAISE EXCEPTION 'Value out of range in subpartition. Fix the XREF_insert_trigger() function!';
+        END IF;
