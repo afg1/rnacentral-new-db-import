@@ -13,10 +13,16 @@ def run_command(db, command_string):
 
     cur.commit()
 
+def get_next_index(db):
+    conn = pg.connect(db)
+    cur = conn.cursor()
+    cur.execute("select max(id) from rnc_database")
+    return cur.fetchone()[0] + 1
+
 
 
 @click.command()
-@click.option("--index", prompt="Enter the database index")
+@click.option("--index", default=None, help="Enter the database index")
 @click.option("--descr", prompt="Enter the database short description")
 @click.option("--full_descr", prompt="Enter the database full description")
 @click.option("--display_name", prompt="Enter the database display name")
@@ -28,13 +34,17 @@ def main(index, descr, full_descr, display_name, db, dry_run, print_rendered):
     Quick utility to produce and run necessary SQL commands
     for adding a new database in RNAcentral
     """
-    print(index, descr, full_descr, display_name)
+    if index is None:
+        index = get_next_index(db)
+
+
     argument_dict = {"index" : index,
                    "descr": descr,
                    "full_descr": full_descr,
                    "display_name": display_name,
                    "timestamp": datetime.now(tz=None).isoformat()}
 
+    print(argument_dict)
     ## render the insert command using chevron
     with open("templates/database-entry.mustache", 'r') as entry_template:
         entry = chevron.render(entry_template, argument_dict)
