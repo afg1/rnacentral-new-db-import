@@ -33,8 +33,7 @@ def main(index, descr, full_descr, display_name, db, dry_run, print_rendered):
                    "descr": descr,
                    "full_descr": full_descr,
                    "display_name": display_name,
-                   "timestamp": datetime.now(timezone.utc).isoformat()}
-
+                   "timestamp": datetime.now(tz=None).isoformat()}
 
     ## render the insert command using chevron
     with open("templates/database-entry.mustache", 'r') as entry_template:
