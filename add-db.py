@@ -22,7 +22,7 @@ def get_next_index(db):
 
 
 @click.command()
-@click.option("--index", default=None, help="Enter the database index")
+@click.option("--index", default=None, type=int, help="Enter the database index")
 @click.option("--descr", prompt="Enter the database short description")
 @click.option("--full_descr", prompt="Enter the database full description")
 @click.option("--display_name", prompt="Enter the database display name")
@@ -36,6 +36,17 @@ def main(index, descr, full_descr, display_name, db, dry_run, print_rendered):
     """
     if index is None:
         index = get_next_index(db)
+    if len(descr) >= 60:
+        print("Description string too long! (< 60)")
+        return 1
+
+    if len(full_descr) >= 1024:
+        print("Full descrtption too long! (< 1024)")
+        return 2
+
+    if len(display_name) >= 60:
+        print("Display name too long! (< 60)")
+        return 3
 
 
     argument_dict = {"index" : index,
