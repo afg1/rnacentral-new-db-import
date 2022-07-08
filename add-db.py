@@ -146,7 +146,12 @@ def main(index, descr, full_descr, display_name, db, dry_run, print_rendered):
             context.run_command(entry)
             context.run_command(partition)
             context.run_command(xref_new)
+
+            context.commit_changes()
             print("Done!")
+
+
+
 
 
 
