@@ -5,6 +5,7 @@ Code to create the needed tables and other changes in the RNAcentral database fo
 Based on the code originally developed by Blake Sweeney (https://github.com/blakesweeney/new-db-flow)
 
 ## Help output
+```
 Usage: add-db.py [OPTIONS]
 
   Quick utility to produce and run necessary SQL commands for adding a new
@@ -23,7 +24,7 @@ Options:
 
   --print_rendered     Print rendered templates
   --help               Show this message and exit.
-
+```
 ## Example usage
 
 _NB: I have a file which I use to make the DB URL into an environment variable, so it doesn't get specified in the command_
